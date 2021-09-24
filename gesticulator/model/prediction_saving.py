@@ -122,8 +122,10 @@ class PredictionSavingMixin(ABC):
                              + self.hparams.future_context 
 
         segment_idx = 0
+        loads = os.getenv("LOAD");
+        print("load is ", int(loads));
         for file_num in segment_start_times.keys():
-            for i in range(5):
+            for i in range(int(loads)):
                 print("round " + i)
                 audio_full = self.test_prediction_inputs[file_num]['audio']
                 text_full = self.test_prediction_inputs[file_num]['text']
