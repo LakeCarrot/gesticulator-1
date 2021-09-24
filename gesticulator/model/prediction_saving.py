@@ -103,8 +103,7 @@ class PredictionSavingMixin(ABC):
             # The start times of the semantic test segments in the paper
             segment_start_times = {
                 # These correspond to the NaturalTalking_04/05 files
-                '04': [55, 150, 215, 258, 320, 520, 531], 
-                '05': [15, 53, 74, 91, 118, 127, 157, 168, 193, 220, 270, 283, 300] }
+                '04': [55, 150, 215, 258, 320, 520, 531]}
         elif mode == 'rand':
             # Random segment start times from the paper
             segment_start_times = {
@@ -124,29 +123,31 @@ class PredictionSavingMixin(ABC):
 
         segment_idx = 0
         for file_num in segment_start_times.keys():
-            audio_full = self.test_prediction_inputs[file_num]['audio']
-            text_full = self.test_prediction_inputs[file_num]['text']
+            for i in range(5):
+                print("round " + i)
+                audio_full = self.test_prediction_inputs[file_num]['audio']
+                text_full = self.test_prediction_inputs[file_num]['text']
 
-            for start_time in segment_start_times[file_num]:
-                segment_idx += 1
-                start_frame = int(start_time * self.data_fps - self.hparams.past_context)
-                end_frame = start_frame + duration_in_frames
-                # Crop and add the batch dimension
-                audio = audio_full[start_frame:end_frame].unsqueeze(0) 
-                text = text_full[start_frame:end_frame].unsqueeze(0)
+                for start_time in segment_start_times[file_num]:
+                    segment_idx += 1
+                    start_frame = int(start_time * self.data_fps - self.hparams.past_context)
+                    end_frame = start_frame + duration_in_frames
+                    # Crop and add the batch dimension
+                    audio = audio_full[start_frame:end_frame].unsqueeze(0) 
+                    text = text_full[start_frame:end_frame].unsqueeze(0)
                 
-                predicted_gestures = self.forward(
-                    audio, text, use_conditioning=True, 
-                    motion=None).cpu().detach().numpy()
+                    predicted_gestures = self.forward(
+                        audio, text, use_conditioning=True, 
+                        motion=None).cpu().detach().numpy()
 
-                if self.hparams.use_pca:
-                    pca = load('utils/pca_model_12.joblib')
-                    predicted_gestures = pca.inverse_transform(predicted_gestures)
+                    if self.hparams.use_pca:
+                        pca = load('utils/pca_model_12.joblib')
+                        predicted_gestures = pca.inverse_transform(predicted_gestures)
         
-                filename = f"{mode}_{segment_idx}"
-                print("\t-", filename)
+                    filename = f"{mode}_{segment_idx}_{i}"
+                    print("\t-", filename)
                 
-                self.save_prediction(predicted_gestures, "evaluation", filename)
+                    self.save_prediction(predicted_gestures, "evaluation", filename)
             
         print(f"Generated {mode} test predictions to {self.hparams.generated_gestures_dir}", flush=True)
 

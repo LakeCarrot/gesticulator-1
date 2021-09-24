@@ -506,8 +506,7 @@ class GesticulatorModel(pl.LightningModule, PredictionSavingMixin):
         onto the CPU as well, causing a device mismatch if the GPU is enabled.
         """
         self.test_prediction_inputs = {
-            '04': self.load_test_prediction_input('04'),
-            '05': self.load_test_prediction_input('05')}
+            '04': self.load_test_prediction_input('04')}
         
         if semantic:
             self.generate_test_predictions(mode='seman')
