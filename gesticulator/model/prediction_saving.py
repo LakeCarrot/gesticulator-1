@@ -126,7 +126,7 @@ class PredictionSavingMixin(ABC):
         print("load is ", loads);
         for file_num in segment_start_times.keys():
             for i in range(int(loads)):
-                print("round " + i)
+                print("round ", i)
                 audio_full = self.test_prediction_inputs[file_num]['audio']
                 text_full = self.test_prediction_inputs[file_num]['text']
 
