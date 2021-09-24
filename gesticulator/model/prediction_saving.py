@@ -123,7 +123,7 @@ class PredictionSavingMixin(ABC):
 
         segment_idx = 0
         loads = os.getenv("LOAD");
-        print("load is ", int(loads));
+        print("load is ", type(loads));
         for file_num in segment_start_times.keys():
             for i in range(int(loads)):
                 print("round " + i)
