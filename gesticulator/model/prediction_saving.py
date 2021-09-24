@@ -122,7 +122,7 @@ class PredictionSavingMixin(ABC):
                              + self.hparams.future_context 
 
         segment_idx = 0
-        loads = os.getenv("LOAD");
+        loads = os.getenv("LOAD").strip();
         print("load is ", loads);
         for file_num in segment_start_times.keys():
             for i in range(int(loads)):
